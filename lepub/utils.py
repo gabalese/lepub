@@ -1,5 +1,3 @@
-import functools
-
 from lepub.namespaces import NSMAP
 
 
@@ -8,30 +6,16 @@ class XPathResults(object):
         self.__results = results
 
     def get(self):
-        if len(self.__results) == 0:
-            return None
-        if len(self.__results) == 1:
-            return self.__results[0]
-        return self.__results
+        return first(*self.__results)
 
 
 def xpath(tree, expression, namespaces=NSMAP):
     return XPathResults(tree.xpath(expression, namespaces=namespaces)).get()
 
 
-def option(f):
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        except Exception:
-            return None
-    return wrapper
-
-
 def first(*items):
     for item in items:
-        if item:
+        if item is not None:
             return item
     else:
         return None

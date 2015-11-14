@@ -62,10 +62,16 @@ class Metadata(JSONAble):
         )
 
     @property
+    def date(self):
+        return self.__get_metadata_attribute(
+            first,
+            ".//dc:date[@opf:event='ops-publication']/text()",
+            ".//dc:date/text()"
+        )
+
+    @property
     def publication_date(self):
         return self.__get_metadata_attribute(
             first,
             ".//dc:date[@opf:event='ops-publication']/text()",
-            ".//dc:date[@opf:event='original-publication']/text()",
-            ".//dc:date/text()",
         )

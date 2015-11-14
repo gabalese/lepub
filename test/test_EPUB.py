@@ -2,7 +2,6 @@ import json
 import os
 import zipfile
 from unittest import TestCase
-
 from lepub.epub import EPUB
 
 location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), *path)
@@ -31,7 +30,7 @@ class TestEPUB(TestEPUBBase):
         assert self.example.metadata.author == 'Edgar Allan Poe'
 
     def test_epub_has_publication_date(self):
-        print self.example.metadata.publication_date
+        assert self.example.metadata.publication_date
 
     def test_epub_has_no_translator(self):
         assert self.example.metadata.translator is None
@@ -104,5 +103,6 @@ class TestJSONInterface(TestEPUBBase):
         assert json.loads(self.example.metadata.json()) == {
             "publisher": "Feedbooks",
             "description": "\"The Black Cat\" is a short story by Edgar Allan Poe. It was first published in the August 19, 1843, edition of The Saturday Evening Post. It is a study of the psychology of guilt, often paired in analysis with Poe's \"The Tell-Tale Heart\". In both, a murderer carefully conceals his crime and believes himself unassailable, but eventually breaks down and reveals himself, impelled by a nagging reminder of his guilt.",
-            "language": "en", "title": "The Black Cat", "author": "Edgar Allan Poe", "publication_date": "2007-04-12"
+            "language": "en", "title": "The Black Cat", "author": "Edgar Allan Poe", "publication_date": "2007-04-12",
+            "date": "2007-04-12"
         }
