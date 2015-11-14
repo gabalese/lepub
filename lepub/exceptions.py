@@ -1,0 +1,2 @@
+class InvalidEpub(Exception):
+    pass
