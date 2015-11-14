@@ -18,8 +18,11 @@ class TestEPUB(TestCase):
     def test_can_be_picked_up(self):
         assert isinstance(self.example_file._file, zipfile.ZipFile)
 
+    def test_returns_root_file(self):
+        assert self.example_file.get_opf_path() == 'OPS/fb.opf'
+
     def test_epub_has_title(self):
         assert self.example_file.title == 'The Black Cat'
 
-    def test_returns_root_file(self):
-        assert self.example_file._opf_path == 'OPS/fb.opf'
+    def test_epub_has_author(self):
+        assert self.example_file.author == 'Edgar Allan Poe'
