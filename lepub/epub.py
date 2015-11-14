@@ -1,9 +1,13 @@
+import os
 import zipfile
+import io
 
 from lxml import etree
 
 from lepub.utils import xpath
-from metadata import OPF
+from metadata import Document
+from lepub.toc import TOC
+from lepub.opf import OPF
 
 
 class EPUB(object):
@@ -12,6 +16,9 @@ class EPUB(object):
         self._opf = OPF(self.get_opf_tree(self.get_opf_path()))
         self.metadata = self._opf.metadata
         self.manifest = self._opf.manifest
+        self.spine = self._opf.spine
+        self.guide = self._opf.guide
+        self.toc = self.get_toc()
 
     @property
     def title(self):
@@ -28,11 +35,24 @@ class EPUB(object):
     def get_opf_path(self):
         with self._file.open('META-INF/container.xml') as container_file:
             container_root = etree.fromstring(container_file.read())
-        rootfile = xpath(container_root, './/container:rootfile')
-        opf_path = rootfile.get('full-path')
+        opf_path = xpath(container_root, './/container:rootfile/@full-path')
         return opf_path
 
     def get_opf_tree(self, opf_path):
-        with self._file.open(opf_path) as opf_file:
-            opf_tree = etree.fromstring(opf_file.read())
+        opf_tree = etree.fromstring(self._file.read(opf_path))
         return opf_tree
+
+    def get_toc(self):
+        return TOC(
+            etree.fromstring(
+                self.get(self.manifest.get('id', self._opf.spine.id)).content()
+            )
+        )
+
+    def get(self, manifest_item):
+        path_in_zip = os.path.join(os.path.dirname(self.get_opf_path()), manifest_item.href)
+        document_data = self._file.read(path_in_zip)
+        return Document(
+            filename=os.path.basename(manifest_item.href),
+            content=io.BytesIO(document_data)
+        )
