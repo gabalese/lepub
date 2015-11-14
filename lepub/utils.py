@@ -1,3 +1,5 @@
+import functools
+
 from lepub.namespaces import NSMAP
 
 
@@ -15,3 +17,13 @@ class XPathResults(object):
 
 def xpath(tree, expression, namespaces=NSMAP):
     return XPathResults(tree.xpath(expression, namespaces=namespaces)).get()
+
+
+def option(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except Exception:
+            return None
+    return wrapper

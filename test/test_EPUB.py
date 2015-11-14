@@ -26,3 +26,23 @@ class TestEPUB(TestCase):
 
     def test_epub_has_author(self):
         assert self.example_file.author == 'Edgar Allan Poe'
+
+    def test_epub_has_no_translator(self):
+        assert self.example_file.translator is None
+
+    def test_epub_file_has_manifest(self):
+        assert self.example_file.manifest is not None
+
+    def test_epub_manifest_contains_many_items(self):
+        assert len(self.example_file.manifest) == 16
+
+    def test_epub_manifest_behaves_like_a_list(self):
+        assert self.example_file.manifest[0] is not None
+
+    def test_epub_manifest_contains_different_media_types(self):
+        css = self.example_file.manifest.filter('type', 'text/css')
+        assert len(css) == 6
+
+    def test_epub_manifest_items_contain_href(self):
+        html_docs = self.example_file.manifest.filter('type', 'application/xhtml+xml')
+        assert html_docs[0].href == 'cover.xml'
