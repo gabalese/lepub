@@ -1,8 +1,34 @@
-from lxml.etree import Comment
+import zipfile
+
+from lxml import etree
 
 from lepub.exceptions import InvalidEpub
 from lepub.metadata import Metadata
+from lepub.toc import TOC
 from lepub.utils import xpath
+
+
+class OPFMixin(object):
+    def __init__(self, input_file_path):
+        self._file = zipfile.ZipFile(input_file_path, 'r')
+        self._opf = OPF(self.get_opf_tree(self.get_opf_path()))
+
+    def get_opf_path(self):
+        with self._file.open('META-INF/container.xml') as container_file:
+            container_root = etree.fromstring(container_file.read())
+        opf_path = xpath(container_root, './/container:rootfile/@full-path')
+        return opf_path
+
+    def get_opf_tree(self, opf_path):
+        opf_tree = etree.fromstring(self._file.read(opf_path))
+        return opf_tree
+
+    def get_toc(self):
+        return TOC(
+            etree.fromstring(
+                self.get(self.manifest.get('id', self._opf.spine.id)).content()
+            )
+        )
 
 
 class OPF(object):
@@ -19,8 +45,8 @@ class Manifest(object):
         self.__tree = xpath(opf_tree, './/opf:manifest')
         self.__items = [
             ManifestItem(item) for item in self.__tree.getchildren()
-            if item.tag is not Comment
-        ]
+            if item.tag is not etree.Comment
+            ]
 
     @property
     def stylesheets(self):
@@ -76,7 +102,7 @@ class Spine(object):
         return [
             self.__manifest.get('id', spine_item.get('idref'))
             for spine_item in self.__tree
-        ]
+            ]
 
 
 class Guide(object):
@@ -84,7 +110,7 @@ class Guide(object):
         self.__tree = xpath(opf_tree, './/opf:guide')
         self.__items = [
             Reference(item) for item in self.__tree
-        ]
+            ]
 
     @property
     def items(self):

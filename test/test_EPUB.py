@@ -25,16 +25,16 @@ class TestEPUB(TestEPUBBase):
         assert self.example.get_opf_path() == 'OPS/fb.opf'
 
     def test_epub_has_title(self):
-        assert self.example.title == 'The Black Cat'
+        assert self.example.metadata.title == 'The Black Cat'
 
     def test_epub_has_author(self):
-        assert self.example.author == 'Edgar Allan Poe'
+        assert self.example.metadata.author == 'Edgar Allan Poe'
 
     def test_epub_has_publication_date(self):
         print self.example.metadata.publication_date
 
     def test_epub_has_no_translator(self):
-        assert self.example.translator is None
+        assert self.example.metadata.translator is None
 
     def test_epub_file_has_manifest(self):
         assert self.example.manifest is not None
