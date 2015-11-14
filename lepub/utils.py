@@ -27,3 +27,17 @@ def option(f):
         except Exception:
             return None
     return wrapper
+
+
+def first(*items):
+    for item in items:
+        if item:
+            return item
+    else:
+        return None
+
+
+def every(*items):
+    if len(items) == 1:
+        return items[0]
+    return items
