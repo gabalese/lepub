@@ -5,7 +5,7 @@ from lxml import etree
 from lepub.exceptions import InvalidEpub
 from lepub.metadata import Metadata
 from lepub.toc import TOC
-from lepub.utils import xpath
+from lepub.utils import xpath, every
 
 
 class OPFMixin(object):
@@ -31,8 +31,17 @@ class OPFMixin(object):
         )
 
 
+class Idenfier(object):
+    def __init__(self, opf_tree):
+        self.__tree = xpath(opf_tree, './/dc:identifier')
+        self.__items = [
+            item.text for item in self.__tree
+        ]
+
+
 class OPF(object):
     def __init__(self, opf_tree):
+        self.unique_idenfier = opf_tree.get('unique-identifier')
         self.metadata = Metadata(opf_tree)
         self.manifest = Manifest(opf_tree)
         self.spine = Spine(opf_tree, self.manifest)

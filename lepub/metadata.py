@@ -4,11 +4,29 @@ from lepub.utils import xpath, first, every
 
 class Metadata(JSONAble):
     def __init__(self, opf_tree):
+        self.__unique_identifier_id = opf_tree.get('unique-identifier')
         self.__tree = xpath(opf_tree, './/opf:metadata')
 
     def __get_metadata_attribute(self, quantifier, *attributes):
         return quantifier(
-            *[xpath(self.__tree, attribute) for attribute in attributes]
+            *[xpath(tree=self.__tree, expression=attribute, quantifier=quantifier)
+              for attribute in attributes]
+        )
+
+    @property
+    def identifier(self):
+        if self.__unique_identifier_id:
+            return self.__get_metadata_attribute(
+                first,
+                ".//dc:identifier[@id='%s']/text()" % self.__unique_identifier_id
+            )
+        else:
+            return self.identifiers[0]
+
+    def identifiers(self):
+        return self.__get_metadata_attribute(
+            every,
+            ".//dc:identifier/text()"
         )
 
     @property
@@ -67,6 +85,13 @@ class Metadata(JSONAble):
             first,
             ".//dc:date[@opf:event='ops-publication']/text()",
             ".//dc:date/text()"
+        )
+
+    @property
+    def subject(self):
+        return self.__get_metadata_attribute(
+            every,
+            ".//dc:subject/text()"
         )
 
     @property

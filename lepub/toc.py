@@ -1,7 +1,10 @@
+import json
+
 from lepub.utils import xpath
+from jsonable import JSONAble
 
 
-class TOC(object):
+class TOC(JSONAble):
     def __init__(self, toc_tree):
         self.__tree = xpath(toc_tree, './/ncx:navMap')
         self.__items = [
@@ -22,3 +25,11 @@ class TOCItem(object):
         self.order = int(self.__item.get('playOrder'))
         self.label = xpath(self.__item, './/ncx:navLabel/ncx:text/text()')
         self.src = xpath(self.__item, './/ncx:content/@src')
+
+    def as_json(self):
+        return {
+            'order': self.order,
+            'label': self.label,
+            'src': self.src
+        }
+

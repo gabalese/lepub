@@ -12,7 +12,7 @@ class JSONAble(object):
                 prop: getattr(self, prop)
                 for prop in properties
                 if getattr(self, prop) is not None
-            }
+            }, default=lambda o: o.as_json()
         )
 
 
