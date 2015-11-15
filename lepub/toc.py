@@ -18,6 +18,9 @@ class TOC(JSONAble):
     def __iter__(self):
         return iter(self.__items)
 
+    def json(self):
+        return super(TOC, self).json()
+
 
 class TOCItem(object):
     def __init__(self, item):

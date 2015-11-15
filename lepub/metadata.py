@@ -21,7 +21,7 @@ class Metadata(JSONAble):
                 ".//dc:identifier[@id='%s']/text()" % self.__unique_identifier_id
             )
         else:
-            return self.identifiers[0]
+            return self.identifiers()[0]
 
     def identifiers(self):
         return self.__get_metadata_attribute(

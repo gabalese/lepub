@@ -117,3 +117,34 @@ class TestJSONInterface(TestEPUBBase):
 
     def test_epub_has_a_toc_json_interface(self):
         assert self.example.toc.json()
+        assert json.loads(self.example.toc.json()) == {
+            "items": [
+                {"src": "title.xml", "order": 1, "label": "Title"},
+                {"src": "about.xml", "order": 2, "label": "About"},
+                {"src": "main0.xml", "order": 3, "label": "The Black Cat"},
+                {"src": "similar.xml", "order": 4, "label": "Recommendations"}
+            ]
+        }
+
+
+class TestEpubDocuments(TestEPUBBase):
+    def test_epub_contains_documents(self):
+        assert self.example.documents
+
+    def test_documents_have_titles(self):
+        assert [document.title for document in self.example.documents] == [
+            'Title Page', 'About', 'The Black Cat', 'Recommendations'
+        ]
+
+    def test_documents_have_contents(self):
+        assert self.example.documents[0].content()
+
+    def test_documents_have_text_only_content(self):
+        assert self.example.documents[0].text()
+        assert '<body>' not in ""\
+            .join(
+            [document.text() for document in self.example.documents]
+        )
+
+    def test_document_contains_chars_count(self):
+        print self.example.documents[0].letter_count

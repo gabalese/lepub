@@ -3,6 +3,10 @@ import json
 
 
 class JSONAble(object):
+
+    def as_json(self):
+        return self.__dict__
+
     def json(self):
         superclass = super(JSONAble, self).__self_class__
         members = inspect.getmembers(superclass, predicate=inspect.isdatadescriptor)
