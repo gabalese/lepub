@@ -36,7 +36,7 @@ class Document(object):
 
     @cached_property
     def word_count(self):
-        raise NotImplementedError()
+        return sum(Counter(self.text().split()).values())
 
     def as_json(self):
         return {

@@ -2,6 +2,7 @@ import json
 import os
 import zipfile
 from unittest import TestCase
+
 from lepub.epub import EPUB
 
 location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), *path)
@@ -141,10 +142,13 @@ class TestEpubDocuments(TestEPUBBase):
 
     def test_documents_have_text_only_content(self):
         assert self.example.documents[0].text()
-        assert '<body>' not in ""\
+        assert '<body>' not in "" \
             .join(
             [document.text() for document in self.example.documents]
         )
 
     def test_document_contains_chars_count(self):
-        print self.example.documents[0].letter_count
+        assert self.example.documents[0].letter_count == 142
+
+    def test_document_contains_word_count(self):
+        assert self.example.documents[0].word_count == 17
