@@ -5,7 +5,9 @@ from lxml import etree
 from lepub.exceptions import InvalidEpub
 from lepub.metadata import Metadata
 from lepub.toc import TOC
-from lepub.utils import xpath, every
+from lepub.utils import xpath
+
+from jsonable import JSONAble
 
 
 class OPFMixin(object):
@@ -49,7 +51,7 @@ class OPF(object):
         self.toc_id = self.spine.id
 
 
-class Manifest(object):
+class Manifest(JSONAble):
     def __init__(self, opf_tree):
         self.__tree = xpath(opf_tree, './/opf:manifest')
         self.__items = [
@@ -96,8 +98,11 @@ class ManifestItem(object):
         self.href = item.get('href')
         self.type = item.get('media-type')
 
+    def __repr__(self):
+        return "<ManifestItem: %s - %s - %s>" % (self.id, self.href, self.type)
 
-class Spine(object):
+
+class Spine(JSONAble):
     def __init__(self, opf_tree, manifest):
         self.__tree = xpath(opf_tree, './/opf:spine')
         self.__manifest = manifest
@@ -114,7 +119,7 @@ class Spine(object):
             ]
 
 
-class Guide(object):
+class Guide(JSONAble):
     def __init__(self, opf_tree):
         self.__tree = xpath(opf_tree, './/opf:guide')
         self.__items = [
@@ -126,7 +131,7 @@ class Guide(object):
         return self.__items
 
 
-class Reference(object):
+class Reference(JSONAble):
     def __init__(self, item):
         self.type = item.get('type')
         self.title = item.get('title')

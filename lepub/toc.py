@@ -1,5 +1,3 @@
-import json
-
 from lepub.utils import xpath
 from jsonable import JSONAble
 
