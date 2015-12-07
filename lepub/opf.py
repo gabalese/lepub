@@ -92,7 +92,7 @@ class Manifest(JSONAble):
         return self.__items[item]
 
 
-class ManifestItem(object):
+class ManifestItem(JSONAble):
     def __init__(self, item):
         self.id = item.get('id')
         self.href = item.get('href')
